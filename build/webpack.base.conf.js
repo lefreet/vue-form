@@ -19,6 +19,24 @@ const createLintingRule = () => ({
   }
 })
 
+// 新增
+var md = require('markdown-it')();
+var striptags = require('./strip-tags');
+const slugify = require('transliteration').slugify;
+var wrap = function(render) {
+  return function() {
+    return render.apply(this, arguments)
+      .replace('<code v-pre class="', '<code class="hljs ')
+      .replace('<code>', '<code class="hljs">');
+  };
+};
+function convert(str) {
+  str = str.replace(/(&#x)(\w{4});/gi, function($0) {
+    return String.fromCharCode(parseInt(encodeURIComponent($0).replace(/(%26%23x)(\w{4})(%3B)/g, '$2'), 16));
+  });
+  return str;
+}
+
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
@@ -73,6 +91,62 @@ module.exports = {
         options: {
           limit: 10000,
           name: utils.assetsPath('fonts/[name].[hash:7].[ext]')
+        }
+      },
+      {
+        test: /\.md$/,
+        loader: 'vue-markdown-loader',
+        options: {
+          use: [
+            [require('markdown-it-anchor'), {
+              level: 2,
+              slugify: slugify,
+              permalink: true,
+              permalinkBefore: true
+            }],
+            [require('markdown-it-container'), 'demo', {
+              marker: ':',
+              validate: function(params) {
+                // 匹配需要被包裹的内容
+                return params.trim().match(/^demo\s*(.*)$/);
+              },
+
+              render: function(tokens, idx) {
+                var m = tokens[idx].info.trim().match(/^demo\s*(.*)$/);
+                if (tokens[idx].nesting === 1) {
+                  var description = (m && m.length > 1) ? m[1] : '';
+                  var content = tokens[idx + 1].content;
+                  // 移除代码中的script和style标签内的内容，剩下html，然后作为模版嵌入包装容器，供vue解析
+                  var html = convert(striptags.strip(content, ['script', 'style'])).replace(/(<[^>]*)=""(?=.*>)/g, '$1');
+                  var script = striptags.fetch(content, 'script');
+                  var style = striptags.fetch(content, 'style');
+                  // 传递给jsfiddle的参数
+                  var jsfiddle = { html: html, script: script, style: style };
+                  // 这段是需要被解析还原成md主体
+                  var descriptionHTML = description ? md.render(description) : '';
+
+                  jsfiddle = md.utils.escapeHtml(JSON.stringify(jsfiddle));
+
+                  // 由markdown-it 做预编译，添加容器生成模版，再由vue-markdown-loader编译成vue文件
+                  // loader只取每个demo中第一个script和style
+                  return `<demo-block class="demo-box" :jsfiddle="${jsfiddle}">
+                            <div class="source" slot="source">${html}</div>
+                            ${descriptionHTML}
+                            <div class="highlight" slot="highlight">`;
+                }
+                return '</div></demo-block>\n';
+              }
+            }],
+            [require('markdown-it-container'), 'tip'],
+            [require('markdown-it-container'), 'warning']
+          ],
+          preprocess: function(MarkdownIt, source) {
+            MarkdownIt.renderer.rules.table_open = function() {
+              return '<table class="table">';
+            };
+            MarkdownIt.renderer.rules.fence = wrap(MarkdownIt.renderer.rules.fence);
+            return source;
+          }
         }
       }
     ]
