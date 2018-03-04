@@ -38,7 +38,7 @@
   </div>
 </template>
 
-<style>
+<style lang="scss">
   .demo-block {
     border: solid 1px #ebebeb;
     border-radius: 3px;
