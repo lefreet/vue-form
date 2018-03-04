@@ -2,6 +2,8 @@
 
 > 基于element-ui的vue表单组件封装，扩展了tree-select，richtext，upload
 
+[live demo](https://lefreet.github.io/vue-form/), trying, coming soon.
+
 ## 使用
 
 #### 依赖于element-ui `^2.0.1` 在`main.js`文件中全局注册
