@@ -97,6 +97,7 @@ module.exports = {
         test: /\.md$/,
         loader: 'vue-markdown-loader',
         options: {
+          preventExtract: false,
           use: [
             [require('markdown-it-anchor'), {
               level: 2,
@@ -105,12 +106,17 @@ module.exports = {
               permalinkBefore: true
             }],
             [require('markdown-it-container'), 'demo', {
-              marker: ':',
               validate: function(params) {
                 // 匹配需要被包裹的内容
                 return params.trim().match(/^demo\s*(.*)$/);
               },
-
+              // element 在这做的思路主要是
+              // 1. 在md中先写一个script，style标签，用于执行代码，因为loader只处理第一个
+              // 见：https://github.com/QingWei-Li/vue-markdown-loader/blob/master/lib/markdown-compiler.js#L44
+              // 2. 后文用于写示例的```html ```段用markdown-it正常解析成code block
+              // 3. 其中包含::: demo 标记的代码段，被识别为需要改为在线demo，会把script和style标签剥离只剩模版
+              // 然后包装到demo-block的插槽中供解析生成live demo，此时用的是md文首的script标签作为vm引用实例
+              // 4. 最后复用一次::: demo 标记的内容，直接解析成md html，插入demo-block的后置插槽
               render: function(tokens, idx) {
                 var m = tokens[idx].info.trim().match(/^demo\s*(.*)$/);
                 if (tokens[idx].nesting === 1) {
