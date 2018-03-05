@@ -4,7 +4,7 @@
 
 ## 说明
 
-通过`config`配置项生成一张表单，原因是项目应用中，有几百张表单要通过对应的`json`配置自动生成，才做了这个组件。
+通过`config`配置项生成一张表单，起因是项目应用中，有几百张表单要通过对应的`json`配置自动生成，方便通过配置维护，才做了这个组件。
 
 组件的npm包名称是`@lefreet/vue-form`，不是`vue-form`。我也不想取别的名字，`@lefreet/vue-form`更关注基础表单配置抽象和简单取值。
 
@@ -40,7 +40,7 @@ npm install @lefreet/vue-form --save
             'prop': 'name',
             'label': 'name',
             'options': {
-              // ...some options of element component
+              // some options of element component
               'placeholder': 'input your name'
             }
           }, {
@@ -82,11 +82,11 @@ npm install @lefreet/vue-form --save
 * `checkbox` 复选框
 * `switch` 开关
 * `select` 下拉框
-* `tree-select` 树形下拉框
+* `tree` 树形下拉框
 * `date` 时间选择框
 * `upload` 文件上传
 * `richtext` 富文本编辑器([vue-quill-editor](https://github.com/surmon-china/vue-quill-editor))
 
-详情请见[live demo](https://lefreet.github.io/vue-form/)，[欢迎提issue](https://github.com/lefreet/vue-form/issues)。
+具体用法见[live demo](https://lefreet.github.io/vue-form/)，[欢迎提issue](https://github.com/lefreet/vue-form/issues)。
 
 

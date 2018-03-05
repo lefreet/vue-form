@@ -1,15 +1,15 @@
 <template>
-  <div class="vue-form" :class="CONFIG['btns-position']" vm>
+  <div class="vue-form" :class="config['btns-position']" vm>
     <el-form
       class="form-body"
-      :rules="CONFIG['rules']"
-      :label-position="CONFIG['label-position']"
-      :label-width="CONFIG['label-width']"
-      :label-suffix="CONFIG['label-suffix']"
-      :show-message="CONFIG['show-message']"
-      :inline-message="CONFIG['inline-message']"
-      :status-icon="CONFIG['status-icon']"
-      :size="CONFIG['size']"
+      :rules="config['rules']"
+      :label-position="config['label-position']"
+      :label-width="config['label-width']"
+      :label-suffix="config['label-suffix']"
+      :show-message="config['show-message']"
+      :inline-message="config['inline-message']"
+      :status-icon="config['status-icon']"
+      :size="config['size']"
 
       ref="form"
       :model="values"
@@ -82,6 +82,12 @@ import FieldRichtext from './field-richtext.vue'
 
 import ENV from '@strongsoft/env'
 
+// 强制依赖element-ui
+import Vue from 'vue'
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+
 export default {
   components: {
     FieldInput,
@@ -94,19 +100,19 @@ export default {
     FieldUpload,
     FieldRichtext
   },
-  props: ['CONFIG'],
+  props: ['config'],
   data () {
     return {
       values: {}
     }
   },
   created () {
-    let setValues = this.CONFIG.values || {}
+    let setValues = this.config.values || {}
     let getValues = {}
     const _ENV = ENV
 
     // 初始化values.key
-    this.CONFIG.fields.forEach((field, i) => {
+    this.config.fields.forEach((field, i) => {
       if (!field.prop && !field.type) {
         throw Error('field name || type 是必填的')
       } else if (getValues[field.prop]) {
@@ -141,8 +147,8 @@ export default {
       return this.$refs['form']
     },
     fields () {
-      let cols = this.CONFIG.cols
-      return this.CONFIG.fields.map(field => {
+      let cols = this.config.cols
+      return this.config.fields.map(field => {
         // 预处理防止列配置超出范围
         field.col = field.col > cols ? cols : (field.col || 1)
 
@@ -150,7 +156,7 @@ export default {
       })
     },
     buttons () {
-      return this.CONFIG.buttons || [
+      return this.config.buttons || [
         {
           'text': '提交',
           'event': 'submit',
@@ -165,12 +171,12 @@ export default {
     },
     btnsStyle () {
       return {
-        width: this.CONFIG['btns-width']
+        width: this.config['btns-width']
       }
     },
     // 一个简单的动态规划，初始化表单域布局
     layout () {
-      let cols = this.CONFIG.cols || 2
+      let cols = this.config.cols || 2
       let fields = this.fields
       let lastIndex = fields.length - 1
 
@@ -211,7 +217,7 @@ export default {
   },
   methods: {
     span (field) {
-      return field.col / this.CONFIG.cols * 24
+      return field.col / this.config.cols * 24
     },
     events (name) {
       if (name) {
