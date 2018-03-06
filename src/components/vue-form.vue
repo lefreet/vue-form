@@ -80,7 +80,7 @@ import FieldTree from './field-tree.vue'
 import FieldUpload from './field-upload.vue'
 import FieldRichtext from './field-richtext.vue'
 
-import ENV from '@strongsoft/env'
+import ENV from '../utils/env'
 
 // 强制依赖element-ui
 import Vue from 'vue'

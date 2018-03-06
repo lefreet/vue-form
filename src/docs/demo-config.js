@@ -7,6 +7,7 @@ export default {
       config: {
         'cols': 2,
         'label-width': '100px',
+        'values': {},
         'fields': [{
           'required': true,
           'type': 'input',

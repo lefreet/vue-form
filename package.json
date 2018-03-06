@@ -1,22 +1,22 @@
 {
-  "name": "@strongsoft/vue-form",
-  "version": "1.0.15",
+  "name": "@lefreet/vue-form",
+  "version": "1.0.0",
   "description": "基础表单组件",
-  "author": "wsn<wsn@strongsoft.net>",
+  "author": "lefreet<137931579@qq.com>",
   "private": false,
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "devd": "node --inspect-brk node_modules/.bin/webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "lint": "eslint --ext .js,.vue src",
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@strongsoft/env": "^1.0.2",
     "axios": "^0.17.1",
     "element-ui": "^2.0.10",
+    "js-cookie": "^2.2.0",
     "postcss-loader": "^2.0.10",
+    "query-string": "^5.1.0",
     "vue": "^2.5.2",
     "vue-quill-editor": "^3.0.4"
   },
