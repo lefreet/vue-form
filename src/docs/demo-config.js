@@ -114,6 +114,27 @@ export default {
           'prop': 'article',
           'col': 2
         }]
+      },
+      config1: {
+        'cols': 3,
+        'btns-position': 'right',
+        'label-width': '80px',
+        'fields': [{
+          'type': 'input',
+          'prop': 'input1',
+          'label': 'input1',
+          'col': 3
+        }, {
+          'type': 'input',
+          'prop': 'input2',
+          'label': 'input2',
+          'col': 2
+        }, {
+          'type': 'input',
+          'prop': 'input3',
+          'label': 'input3',
+          'col': 1
+        }]
       }
     }
   }

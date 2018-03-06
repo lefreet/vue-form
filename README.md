@@ -1,5 +1,7 @@
 > 基于element-ui的vue表单组件封装，通过配置生成表单
 
+[![Build Status](https://travis-ci.org/lefreet/vue-form.svg?branch=master)](https://travis-ci.org/lefreet/vue-form)
+
 [live demo](https://lefreet.github.io/vue-form/)
 
 ## 说明
@@ -88,5 +90,10 @@ npm install @lefreet/vue-form --save
 * `richtext` 富文本编辑器([vue-quill-editor](https://github.com/surmon-china/vue-quill-editor))
 
 具体用法见[live demo](https://lefreet.github.io/vue-form/)，[欢迎提issue](https://github.com/lefreet/vue-form/issues)。
+
+## todo
+
+* live demo完善
+* `field component`标签优化
 
 

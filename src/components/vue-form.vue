@@ -10,6 +10,7 @@
       :inline-message="config['inline-message']"
       :status-icon="config['status-icon']"
       :size="config['size']"
+      :disabled="config['disabled']"
 
       ref="form"
       :model="values"
