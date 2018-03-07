@@ -6,4 +6,4 @@ node_js:
 deploy:
   provider: npm
   email: '137931579@qq.com'
-  api_key: '1b84bec8-9d46-4c4c-bf4f-586b72523717
+  api_key: '1b84bec8-9d46-4c4c-bf4f-586b72523717'
