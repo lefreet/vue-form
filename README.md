@@ -82,8 +82,8 @@ npm install @lefreet/vue-form --save
 * `input` 文本框
 * `radio` 单选框
 * `checkbox` 复选框
-* `switch` 开关
 * `select` 下拉框
+* `switch` 开关
 * `tree` 树形下拉框
 * `date` 时间选择框
 * `upload` 文件上传
@@ -95,5 +95,5 @@ npm install @lefreet/vue-form --save
 
 * live demo完善
 * `field component`标签优化
-
+* 按需引用element
 

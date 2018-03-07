@@ -43,15 +43,6 @@ export default {
             }]
           }
         }, {
-          'type': 'switch',
-          'prop': 'status',
-          'label': '开关',
-          'options': {
-            'active-text': '开',
-            'active-value': 1,
-            'inactive-value': 0
-          }
-        }, {
           'type': 'select',
           'prop': 'company',
           'label': '下拉框',
@@ -66,6 +57,15 @@ export default {
               'label': '百度',
               'value': 3
             }]
+          }
+        }, {
+          'type': 'switch',
+          'prop': 'status',
+          'label': '开关',
+          'options': {
+            'active-text': '开',
+            'active-value': 1,
+            'inactive-value': 0
           }
         }, {
           'type': 'tree',
