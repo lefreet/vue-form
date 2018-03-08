@@ -4,7 +4,7 @@ export default {
   components: { VueForm },
   data () {
     return {
-      config: {
+      config1: {
         'cols': 2,
         'label-width': '100px',
         'values': {},
@@ -115,7 +115,18 @@ export default {
           'col': 2
         }]
       },
-      config1: {
+      config2: {
+        'values': {
+          'name': 'this is default value'
+        },
+        'fields': [{
+          'type': 'input',
+          'required': true,
+          'prop': 'name'
+        }]
+      },
+      values2: {},
+      config3: {
         'cols': 3,
         'btns-position': 'right',
         'label-width': '80px',
@@ -136,6 +147,14 @@ export default {
           'col': 1
         }]
       }
+    }
+  },
+  methods: {
+    submit (values) {
+      this.values2 = values
+    },
+    clear () {
+      this.$refs['form'].clearFields()
     }
   }
 }
