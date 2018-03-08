@@ -241,7 +241,7 @@ export default {
         if (valid === true) {
           let values = this.values
 
-          this.$emit('submit', values)
+          this.$emit('submit', Object.assign({}, values))
         }
       })
     },
