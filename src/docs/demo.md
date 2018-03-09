@@ -8,14 +8,6 @@ export default VM
 
 好像没什么可说的
 
-* 需完善特性说明：
-  - 控件集合 ☑️
-  - cols/col布局 ☑️
-  - 方法调用 ☑️
-  - 单组件调用，默认返回值
-  - buttons配置
-  - values初始化功能
-
 ### 完整示例
 
 ::: demo 通过`config`配置即可生成一个表单
@@ -146,12 +138,10 @@ export default VM
 
 ### 取值
 
-::: demo 表单通过`prop`自动生成`values`键值对；`@submit`监听表单提交事件，并获取验证通过的值；可直接调用实例的方法；
+::: demo 表单通过`prop`自动生成`values`键值对；`@submit`监听表单提交事件，并获取验证通过的值；可直接调用实例的方法；`button`继承了`el-button`的所有属性，能够方便自定义；扩展了`event: '@xxx'`可以让表单触发内置的xxx事件，`event: xxx`可以直接调用表单的内置方法
 ```html
-<vue-form :config="config2" @submit="submit" ref="form"></vue-form> 
-<p>your commit are: </p>
-<p>{{ values2 }}</p>
-<el-button @click="clear">清空</el-button>
+<vue-form :config="config2" @submit="submit2" ref="form"></vue-form> 
+<p>your commit are: {{ values2 }} </p>
 
 <script>
   import VueForm from '@lefreet/vue-form'
@@ -162,6 +152,19 @@ export default VM
         'values': {
           'name': 'this is default value'
         },
+        'buttons': [{
+          'text': '触发@submit事件',
+          'icon': 'el-icon-info',
+          'event': '@submit'
+        }, {
+          'text': '调用clearFields方法',
+          'icon': 'el-icon-success',
+          'event': 'clearFields'
+        }, {
+          'text': '重置',
+          'event': 'resetFields',
+          'type': 'success'
+        }],
         'fields': [{
           'type': 'input',
           'required': true,
@@ -171,10 +174,10 @@ export default VM
       values2: {}
     },
     methods: {
-      submit (values) {
+      submit2 (values) {
         this.values2 = values
       },
-      clear () {
+      clear2 () {
         this.$refs['form'].clearFields()
       }
     }
@@ -221,22 +224,93 @@ export default VM
 ```
 :::
 
+### 初始化
+
+::: demo 组件内部用`js-cookie`和`query-string`获取了些静态数据，可以在配置的`values`节点，通过`#cookie.xxx`或者`#url.xxx`来获取些常用参数初始化到对应组件内，后面会根据需求扩展
+```html
+<vue-form :config="config4"></vue-form>
+
+<script>
+  import VueForm from '@lefreet/vue-form'
+  document.cookie = 'vueformstring="this is a string from cookie"; path=/'
+  export default {
+    components: { VueForm },
+    data () {
+      config4: {
+        'buttons': [],
+        'values': {
+          'name': '#cookie.vueformstring'
+        },
+        'fields': [{
+          'prop': 'name',
+          'type': 'input'
+        }]
+      }
+    }
+  }
+</script>
+```
+:::
+
+### 单控件引用
+你可能想单独引用某个控件(这和直接用element不是一样的？)，比如`tree-select`(后面看看能不能提个pr给他们)
+::: demo 每个控件都统一实现了`options`属性和`v-model`绑定
+```html
+<vue-tree :options="treeOptions" v-model="treeValue"></vue-tree>
+<p>tree value is: {{ treeValue }} </p>
+
+<script>
+  import { VueTree } from '@lefreet/vue-form'
+  export default {
+    components: { VueTree },
+    treeOptions: {
+      'node-key': 'id',
+      'show-checkbox': true,
+      'value-type': 'leaf',
+      'data': [{
+        'id': 1,
+        'label': '福建',
+        'children': [{
+          'id': 2,
+          'label': '福州'
+        }, {
+          'id': 3,
+          'label': '厦门'
+        }]
+      }]
+    },
+    treeValue: ''
+  }
+</script>
+```
+:::
+
+
 ### 配置文档
 
 * 下文**from**代表配置节点的属性来自`element-ui`对应组件，可直接配置注入
-* 表格中列举的为扩展的属性或者方法，除非有特殊说明，不再列举，点击链接查看官方文档就好
+* `return`表示单个表单控件值的返回格式示例
+* 表格中写出来的为扩展或者需要特殊说明的属性，其他属性点击链接查看官方文档就好
 
 #### config from [Form Attributes](http://element.eleme.io/#/zh-CN/component/form#form-attributes)
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |
 | cols | 表单布局每一行分割的列数 | number | - | 2 |
+| buttons | 表单的按钮集合 | array | - | - |
 | btns-position | 表单按钮栏的位置 | string | left/top/right/bottom | bottom |
 | fields | 表单域的配置数组 | array<{}> | 见`field`说明 | [] |
 
 | 方法名 | 说明 | 参数 |
 | --- | --- | --- |
 | clearFields | 清空所有控件的值(注意清空和重置`reset`的操作是不同的) | - |
+
+#### `buttons<button>` from [Button Attributes](http://element.eleme.io/#/zh-CN/component/button#attributes)
+
+| 参数 | 说明 | 类型 | 可选值 | 默认值 |
+| --- | --- | --- | --- | --- |
+| text | 按钮的文本内容 | string | - | - | 
+| event | 按钮的事件或者调用方法的名称, `@xxx`代表触发事件，`xxx`代表调用xxx方法 | string | - | - | 
 
 #### field from [Form-Item Attributes](http://element.eleme.io/#/zh-CN/component/form#form-item-attributes)
 
@@ -245,32 +319,32 @@ export default VM
 | type | 控件类型 | string | 见后文说明 | undefined | 
 | options | 控件个性配置 | object | 见后文说明 | 
 
-#### options of `input` from [Input Attributes](http://element.eleme.io/#/zh-CN/component/input#input-attributes)
+#### options of `input` from [Input Attributes](http://element.eleme.io/#/zh-CN/component/input#input-attributes) return `'a'`  
 
-#### options of `radio` from [Radio-group Attributes](http://element.eleme.io/#/zh-CN/component/radio#radio-group-attributes)
+#### options of `radio` from [Radio-group Attributes](http://element.eleme.io/#/zh-CN/component/radio#radio-group-attributes) return `'a,b,c'`
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |
 | radios | `<el-radio>`的集合 | array<{}> | 继承[Radio Attributes](http://element.eleme.io/#/zh-CN/component/radio#radio-attributes) | undefined |
 | radio-buttons | `<el-radio-button>`的集合 | array<{}> | 继承[Radio-button Attributes](http://element.eleme.io/#/zh-CN/component/radio#radio-button-attributes) | undefined |
 
-#### options of `checkbox` from [Radio-group](http://element.eleme.io/#/zh-CN/component/radio#radio-group-attributes)
+#### options of `checkbox` from [Radio-group Attributes](http://element.eleme.io/#/zh-CN/component/radio#radio-group-attributes) return `'a,b,c'`
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |
 | checkboxs | `<el-checkbox>`的集合 | array<{}> | 继承[Checkbox-group Attributes](http://element.eleme.io/#/zh-CN/component/checkbox#checkbox-group-attributes) | undefined |
 | checkbox-buttons | `<checkbox-buttons>`的集合 | arrat<{}> | 继承[Checkbox-button](http://element.eleme.io/#/zh-CN/component/checkbox#checkbox-button-attributes) | undefined |
 
-#### options of `select` from [Select Attributes](http://element.eleme.io/#/zh-CN/component/select#select-attributes)
+#### options of `select` from [Select Attributes](http://element.eleme.io/#/zh-CN/component/select#select-attributes) return `'a,b,c'`
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |
 | options | `<el-option>`的集合 | array<{}> | 继承[Option Attributes](http://element.eleme.io/#/zh-CN/component/select#option-attributes)
 | option-group | `<el-option-group>`，选项分组，使用该功能时，`options`挂载在该节点下 | object | 继承[Option Group Attributes](http://element.eleme.io/#/zh-CN/component/select#option-group-attributes) | undefined |
 
-#### options of `switch` from [Switch Attributes](http://element.eleme.io/#/zh-CN/component/switch#attributes)
+#### options of `switch` from [Switch Attributes](http://element.eleme.io/#/zh-CN/component/switch#attributes) return `true/false`
 
-#### options of `tree` from [Tree Attributes](http://element.eleme.io/#/zh-CN/component/tree#attributes)
+#### options of `tree` from [Tree Attributes](http://element.eleme.io/#/zh-CN/component/tree#attributes) return `'a,b,c'`
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |
@@ -327,7 +401,7 @@ export default VM
 }]
 ```
 
-####  options of `upload` from [Upload Attribute](http://element.eleme.io/#/zh-CN/component/upload#attribute)
+####  options of `upload` from [Upload Attribute](http://element.eleme.io/#/zh-CN/component/upload#attribute) return `file.id '1,2,3' from api`
 
 | 参数 | 说明 | 类型 | 可选值 | 默认值 |
 | --- | --- | --- | --- | --- |

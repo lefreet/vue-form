@@ -1,7 +1,12 @@
 import VueForm from '../../index.js'
+import {
+  VueTree
+} from '../../index.js'
+
+document.cookie = 'vueformstring="this is a string from cookie"; path=/'
 
 export default {
-  components: { VueForm },
+  components: { VueForm, VueTree },
   data () {
     return {
       config1: {
@@ -119,6 +124,19 @@ export default {
         'values': {
           'name': 'this is default value'
         },
+        'buttons': [{
+          'text': '触发@submit事件',
+          'icon': 'el-icon-info',
+          'event': '@submit'
+        }, {
+          'text': '调用clearFields方法',
+          'icon': 'el-icon-success',
+          'event': 'clearFields'
+        }, {
+          'text': '重置',
+          'event': 'resetFields',
+          'type': 'success'
+        }],
         'fields': [{
           'type': 'input',
           'required': true,
@@ -146,11 +164,39 @@ export default {
           'label': 'input3',
           'col': 1
         }]
-      }
+      },
+      config4: {
+        'buttons': [],
+        'values': {
+          'name': '#cookie.vueformstring'
+        },
+        'fields': [{
+          'prop': 'name',
+          'type': 'input'
+        }]
+      },
+      values4: '', 
+      treeOptions: {
+        'node-key': 'id',
+        'show-checkbox': true,
+        'value-type': 'leaf',
+        'data': [{
+          'id': 1,
+          'label': '福建',
+          'children': [{
+            'id': 2,
+            'label': '福州'
+          }, {
+            'id': 3,
+            'label': '厦门'
+          }]
+        }]
+      },
+      treeValue: ''
     }
   },
   methods: {
-    submit (values) {
+    submit2 (values) {
       this.values2 = values
     },
     clear () {
