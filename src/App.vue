@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <doc></doc>
+    <div class="wrap">
+      <doc></doc>
+    </div>
   </div>
 </template>
 
@@ -23,12 +25,24 @@ export default {
 </script>
 
 <style lang="scss">
+html, body {
+  overflow: hiden;
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  width: 870px;  
+  width: 100%;
+  height: 100%;
   margin: auto;
+  overflow-y: auto;
+}
+#app .wrap {
+  width: 870px;
+  margin: auto;
+}
+#app .wrap section>h3:first-child {
+  margin-top: 0;
 }
 #app .table {
   border-collapse: collapse;
