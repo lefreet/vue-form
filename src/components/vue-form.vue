@@ -31,16 +31,12 @@
             v-if="field"
           >
 
-            <!-- components代替 -->
-            <field-input v-if="field.type==='input'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-input>
-            <field-select v-if="field.type==='select'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-select>
-            <field-radio v-if="field.type==='radio'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-radio>
-            <field-switch v-if="field.type==='switch'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-switch>
-            <field-checkbox v-if="field.type==='checkbox'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-checkbox>
-            <field-date v-if="field.type==='date'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-date>
-            <field-tree v-if="field.type==='tree'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-tree>
-            <field-upload v-if="field.type==='upload'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-upload>
-            <field-richtext v-if="field.type==='richtext'" v-model="values[field.prop]" :options="field.options" :style="fieldStyle(field)"></field-richtext>
+            <component 
+              :is="'field-' + field.type" 
+              v-model="values[field.prop]" 
+              :options="field.options" 
+              :style="fieldStyle(field)"
+            ></component>
 
           </el-form-item>
         </el-col>
@@ -71,35 +67,28 @@
 
 <script>
 
-import FieldInput from './field-input.vue'
-import FieldSelect from './field-select.vue'
-import FieldRadio from './field-radio.vue'
-import FieldSwitch from './field-switch.vue'
-import FieldCheckbox from './field-checkbox.vue'
-import FieldDate from './field-date.vue'
-import FieldTree from './field-tree.vue'
-import FieldUpload from './field-upload.vue'
-import FieldRichtext from './field-richtext.vue'
-
 import ENV from '../utils/env'
 
 // 强制依赖element-ui
 import Vue from 'vue'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
+// 判断下是否有注册element组件
+if (!Vue.$ELEMENT) {
+  var ElementUI = require('element-ui')
+  require('element-ui/lib/theme-chalk/index.css')
+  Vue.use(ElementUI)
+}
 
 export default {
   components: {
-    FieldInput,
-    FieldSelect,
-    FieldRadio,
-    FieldSwitch,
-    FieldCheckbox,
-    FieldDate,
-    FieldTree,
-    FieldUpload,
-    FieldRichtext
+    FieldInput: () => import('./field-input.vue'),
+    FieldSelect: () => import('./field-radio.vue'),
+    FieldRadio: () => import('./field-radio.vue'),
+    FieldSwitch: () => import('./field-switch.vue'),
+    FieldCheckbox: () => import('./field-checkbox.vue'),
+    FieldDate: () => import('./field-date.vue'),
+    FieldTree: () => import('./field-tree.vue'),
+    FieldUpload: () => import('./field-upload.vue'),
+    FieldRichtext: () => import('./field-richtext.vue')
   },
   props: ['config'],
   data () {

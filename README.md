@@ -8,9 +8,8 @@
 
 通过`config`配置项生成一张表单，起因是项目应用中，有几百张表单要通过对应的`json`配置自动生成，方便通过配置维护，才做了这个组件。
 
-组件的npm包名称是`@lefreet/vue-form`，不是`vue-form`。我也不想取别的名字，`@lefreet/vue-form`更关注基础表单配置抽象和简单取值。
+组件的npm包名称是`@lefreet/vue-form`，不是`vue-form`。不想取别的名字了，`@lefreet/vue-form`更关注表单配置抽象和简单取值。
 
-最后，造轮子很无聊。
 
 ## 使用
 
@@ -91,9 +90,4 @@ npm install @lefreet/vue-form --save
 
 具体用法见[live demo](https://lefreet.github.io/vue-form/)，[欢迎提issue](https://github.com/lefreet/vue-form/issues)。
 
-## todo
-
-* live demo完善
-* `field component`标签优化
-* 按需引用element
 
