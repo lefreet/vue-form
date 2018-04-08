@@ -30,7 +30,6 @@
 
             v-if="field"
           >
-
             <component 
               :is="'field-' + field.type" 
               v-model="values[field.prop]" 
@@ -81,7 +80,7 @@ if (!Vue.$ELEMENT) {
 export default {
   components: {
     FieldInput: () => import('./field-input.vue'),
-    FieldSelect: () => import('./field-radio.vue'),
+    FieldSelect: () => import('./field-select.vue'),
     FieldRadio: () => import('./field-radio.vue'),
     FieldSwitch: () => import('./field-switch.vue'),
     FieldCheckbox: () => import('./field-checkbox.vue'),
