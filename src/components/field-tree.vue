@@ -40,8 +40,17 @@ export default {
   },
   mounted () {
     // 保持弹框宽度和输入框一致
-    // 有个bug，外层标签一开始display为none时，无法获取到宽度，后面再想想方案
-    this.popWidth = this.$refs['input'].$el.getBoundingClientRect().width - 24
+    let $input = this.$refs['input'].$el
+    let observer = new MutationObserver((mutations, observer) => {
+      this.popWidth = $input.getBoundingClientRect().width - 24
+      observer.disconnect()
+    })
+    observer.observe($input, {
+      attributes: true,
+      subtree: false,
+      characterData: false,
+      childList: false
+    })
     this.setShowValue()
     this.getData()
   },
