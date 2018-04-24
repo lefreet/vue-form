@@ -10,6 +10,7 @@
 
 组件的npm包名称是`@lefreet/vue-form`，不是`vue-form`。不想取别的名字了，`@lefreet/vue-form`更关注表单配置抽象和简单取值。
 
+* 发现低版本的脚手架存在`postcss-url`的依赖缺失问题， 集成本组件时发现`postcss-url`引用报错，执行：`npm i postcss-url -D`解决.
 
 ## 使用
 
