@@ -114,7 +114,7 @@ export default {
     // 动态默认值
     Object.keys(setValues).forEach(key => {
       let value = setValues[key]
-      if (value[0] === '#') {
+      if (value && value[0] === '#') {
         let indexs = value.substring(1).split('.')
         let _value = _ENV
         indexs.some(index => {
