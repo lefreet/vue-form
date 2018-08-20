@@ -10,7 +10,7 @@
         :style="popoverStyle"
       ></base-tree>
     </el-popover>
-    <base-input ref="input" :options="inputOptions" :value="showValue" v-popover:popover></base-input>
+    <base-input @focus="focus" ref="input" :options="inputOptions" :value="showValue" v-popover:popover></base-input>
   </div>
 </template>
 
@@ -39,18 +39,26 @@ export default {
     }
   },
   mounted () {
+    // 兼容问题，该用focus事件触发
     // 保持弹框宽度和输入框一致
-    let $input = this.$refs['input'].$el
-    let observer = new MutationObserver((mutations, observer) => {
-      this.popWidth = $input.getBoundingClientRect().width - 24
-      observer.disconnect()
-    })
-    observer.observe($input, {
-      attributes: true,
-      subtree: false,
-      characterData: false,
-      childList: false
-    })
+    // let $input = this.$refs['input'].$el
+    // if ($input.getBoundingClientRect() > 0) {
+    //   this.popWidth = $input.getBoundingClientRect().width - 24
+    // }  else {
+    //   // 问题：当表单处于display:none情况时，宽度为0，所以希望在input focus后，重新获取输入框的宽度
+    //   let observer = new MutationObserver((mutations, observer) => {
+    //     this.popWidth = $input.getBoundingClientRect().width - 24
+    //     observer.disconnect()
+    //   })
+    //   observer.observe($input, {
+    //     attributes: true,
+    //     subtree: true,
+    //     characterData: false,
+    //     childList: false
+    //   })
+    //   this.setShowValue()
+    //   this.getData()
+    // }
     this.setShowValue()
     this.getData()
   },
@@ -98,7 +106,7 @@ export default {
             params: api.params
           })
           .then(res => {
-            let data = this.initData(res.data.data, api.type, api.transform)
+            let data = api.type === 'flat' ? res.data.data : this.flat2tree(res.data.data, api.transform)
             this.$set(this.options, 'data', data)
             this.$nextTick(() => {
               this.setShowValue()
@@ -107,73 +115,77 @@ export default {
       }
     },
     // 结构化树数据
-    initData (nodes = [], type = 'flat', transform = {}) {
+    flat2tree (data = [], transform = {}) {
       transform = Object.assign({
         tree_id: 'tree_id',
         tree_pid: 'tree_pid',
         tree_label: 'tree_label'
       }, transform)
       // !!!!!!!!!!!严重问题，树形节点id不能重复
-      if (type === 'flat') {
-        // 属性转换
-        nodes.forEach(row => {
-          row.label = row[transform.tree_label]
-          row._id = row[transform.tree_id]
-          row._pid = row[transform.tree_pid]
-          row.isLeaf = !!row['is_leaf'] || row['is_leaf'] === undefined
+      // 属性转换，用map copy一份数据
+      let nodes = data.map(row => {
+        return Object.assign(row, {
+          label: row[transform.tree_label],
+          _id: row[transform.tree_id],
+          _pid: row[transform.tree_pid],
+          isLeaf: !!row['is_leaf'] || row['is_leaf'] === undefined
         })
+      })
 
-        // 构建树
-        let create = function (nodes, _pid) {
-          let result = []
-          let len = nodes.length
+      // 构建树
+      let create = function (nodes, _pid) {
+        let result = []
+        let len = nodes.length
 
-          if (_pid) {
-            for (let i = 0; i < len; i++) {
-              let node = nodes[i]
-              if (node._pid === _pid) {
-                result.push(node)
-                nodes.splice(i--, 1)
-                len--
-              }
-            }
-          } else {
-            let cache = {}
-            // 转哈希方便索引
-            nodes.forEach(node => {
-              cache[node.tree_id] = true
-            })
-            // 如果_pid不在当前列表中，则认为是根节点，存到结果集，并且从node列表移除
-            for (let i = 0; i < len; i++) {
-              let node = nodes[i]
-              if (!cache[node._pid]) {
-                result.push(node)
-                nodes.splice(i--, 1)
-                len--
-              }
+        if (_pid) {
+          for (let i = 0; i < len; i++) {
+            let node = nodes[i]
+            if (node._pid === _pid) {
+              result.push(node)
+              nodes.splice(i--, 1)
+              len--
             }
           }
-
-          // 中文排序，貌似没起作用
-          // result.sort(function (a, b) {
-          //   let initialA = a.label.toString()[0]
-          //   let initialB = b.label.toString()[0]
-          //   return initialA.localeCompare(initialB)
-          // })
-
-          // 递归子节点
-          result.forEach(node => {
-            node.children = create(nodes, node.tree_id)
+        } else {
+          let cache = {}
+          // 转哈希方便索引
+          nodes.forEach(node => {
+            cache[node._id] = true
           })
-
-          return result.length > 0 ? result : null
+          // 如果_pid不在当前列表中，则认为是根节点，存到结果集，并且从node列表移除
+          for (let i = 0; i < len; i++) {
+            let node = nodes[i]
+            if (!cache[node._pid]) {
+              result.push(node)
+              nodes.splice(i--, 1)
+              len--
+            }
+          }
         }
 
-        let result = create(nodes) || []
+        // 中文排序，貌似没起作用
+        // result.sort(function (a, b) {
+        //   let initialA = a.label.toString()[0]
+        //   let initialB = b.label.toString()[0]
+        //   return initialA.localeCompare(initialB)
+        // })
 
-        return result
-      } else {
-        return nodes
+        // 递归子节点
+        result.forEach(node => {
+          node.children = create(nodes, node._id)
+        })
+
+        return result.length > 0 ? result : null
+      }
+
+      let result = create(nodes) || []
+
+      return result
+    },
+    focus () {
+      let $input = this.$refs['input'].$el
+      if (this.popWidth === 0) {
+        this.popWidth = $input.getBoundingClientRect().width - 24
       }
     }
   }

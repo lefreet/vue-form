@@ -21,7 +21,8 @@ export default {
   computed: {
     val: {
       get () {
-        return new Date(this.value)
+        // avoid Invalid Date
+        return isNaN(new Date(this.value).getTime()) ? undefined : new Date(this.value)
       },
       set (value) {
         var time = ''

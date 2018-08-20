@@ -362,10 +362,9 @@ export default VM
 | params | 接口参数 | object | - | - |
 | type | 接口返回的数据结构类型，是扁平类型时，内部会自动迭代成树形结构 | string | flat | undefined |
 | transform | 接口返回值的key-map映射，供内部构建数据结构使用 | object | - | - |
-| transform.id | 数据值的key | string | - | - |
 | transform.tree_label | 树节点名称的key | string | - | - |
 | transform.tree_id | 数据构建树的唯一编号key | string | - | - |
-| transform.tree_pid | 数据构建树的唯一编号key | string | - | - |
+| transform.tree_pid | 数据构建树的父级编号key | string | - | - |
 
 * api示例
 
@@ -399,6 +398,14 @@ export default VM
   'pid': 1,
   'name': '厦门'
 }]
+```
+
+* 外部得到的数据经常是扁平化的，同接口例子的数据类似，所以组件提供了递归树形的方法（没作为内置方法是因为无法明确的判断传入的data是flat还是tree结构), eg:
+
+```js
+<vue-tree ref="tree" :data="[]" :options="{}"></vue-tree>
+
+this.$refs.tree.flat2tree(data, transform)
 ```
 
 ####  options of `upload` from [Upload Attribute](http://element.eleme.io/#/zh-CN/component/upload#attribute) return `file.id '1,2,3' from api`
