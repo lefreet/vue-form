@@ -106,7 +106,7 @@ export default {
             params: api.params
           })
           .then(res => {
-            let data = api.type === 'flat' ? res.data.data : this.flat2tree(res.data.data, api.transform)
+            let data = api.type === 'flat' ? this.flat2tree(res.data.data, api.transform) : res.data.data
             this.$set(this.options, 'data', data)
             this.$nextTick(() => {
               this.setShowValue()
